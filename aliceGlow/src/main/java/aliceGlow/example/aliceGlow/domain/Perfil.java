@@ -3,8 +3,8 @@ package aliceGlow.example.aliceGlow.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-@Table(name = "perfis")
 @Entity
+@Table(name = "perfis")
 public class Perfil {
 
     @Id
