@@ -27,13 +27,16 @@ public class User {
     private String password;
 
     @ManyToMany
-    @JoinTable(name = "user_perfils", joinColumns = @JoinColumn(name = "user_id"),
+    @JoinTable(name = "user_perfis", joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "perfil_id"))
     private Set<Perfil> perfils = new HashSet<>();
 
-    @Column(nullable = false)
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public Long getId(){return id;}
     public void setId(Long id){this.id = id;}
@@ -50,6 +53,6 @@ public class User {
     public Set<Perfil> getPerfils(){return perfils;}
     public void setPerfils(Set<Perfil> perfils){ this.perfils = perfils;}
 
-    public LocalDateTime getCreateAt(){return createAt;}
-    public void setCreateAt(LocalDateTime createAt){this.createAt = createAt;}
+    public LocalDateTime getCreatedAt(){return createdAt;}
+    public void setCreatedAt(LocalDateTime createdAt){this.createdAt = createdAt;}
 }

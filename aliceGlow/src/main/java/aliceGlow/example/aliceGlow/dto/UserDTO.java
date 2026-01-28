@@ -9,7 +9,7 @@ import java.util.Set;
 public record UserDTO(Long id, String name, String email, String password, Set<Perfil>perfils, LocalDateTime createAt) {
 
     public static UserDTO toDTO(User user){
-        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getPerfils(), user.getCreateAt());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getPerfils(), user.getCreatedAt());
     }
 
     public User fromDTO(){
@@ -19,7 +19,7 @@ public record UserDTO(Long id, String name, String email, String password, Set<P
         user.setEmail(this.name);
         user.setPassword(this.password);
         user.setPerfils(this.perfils);
-        user.setCreateAt(this.createAt);
+        user.setCreatedAt(this.createAt);
 
         return user;
     }

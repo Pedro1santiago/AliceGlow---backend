@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,30 +18,31 @@ public class Sale {
     private Long id;
 
     @NotNull
-    private LocalDateTime date;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     @NotBlank
     private String client;
 
     @NotNull
     @Min(0)
-    private Double total;
+    private BigDecimal total;
 
     @NotNull
-    @NotBlank
+    @OneToMany(mappedBy = "sale")
     private List<SaleItem> items;
 
     public Long getId() {return id;}
     public void setId(Long id){this.id = id;}
 
-    public LocalDateTime getDate(){return date;}
-    public void setDate(LocalDateTime date){this.date = date;}
+    public LocalDateTime getCreatedAt(){return createdAt;}
+    public void setCreatedAt(LocalDateTime createdAt){this.createdAt = createdAt;}
 
     public String getClient(){return client;}
     public void setClient(String client){this.client = client;}
 
-    public Double getTotal(){return total;}
-    public void setTotal(Double total){this.total = total;}
+    public BigDecimal getTotal(){return total;}
+    public void setTotal(BigDecimal total){this.total = total;}
 
     public List<SaleItem> getItems(){return items;}
     public void setItems(List<SaleItem> items){this.items = items;}
