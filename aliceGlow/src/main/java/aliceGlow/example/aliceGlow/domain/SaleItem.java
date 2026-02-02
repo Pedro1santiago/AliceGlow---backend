@@ -16,26 +16,21 @@ public class SaleItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @ManyToOne(optional = false)
-    @JoinColumn(name = "sale_id")
+    @JoinColumn(name = "sale_id", nullable = false)
     private Sale sale;
 
-    @NotNull
     @ManyToOne(optional = false)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @NotNull
-    @Min(0)
+    @Column(nullable = false)
     private Integer quantity;
 
-    @NotNull
-    @DecimalMin("0.00")
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal unitPrice;
 
-    @NotNull
-    @DecimalMin("0.00")
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal subtotal;
 
     public Long getId(){return id;}

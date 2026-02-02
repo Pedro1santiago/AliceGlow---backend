@@ -1,7 +1,7 @@
-package aliceGlow.example.aliceGlow.dto;
+package aliceGlow.example.aliceGlow.dto.sale;
 
 import aliceGlow.example.aliceGlow.domain.Sale;
-import aliceGlow.example.aliceGlow.domain.SaleItem;
+import aliceGlow.example.aliceGlow.dto.saleItem.SaleItemDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

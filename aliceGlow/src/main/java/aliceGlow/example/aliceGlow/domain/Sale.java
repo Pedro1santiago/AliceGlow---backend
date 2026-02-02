@@ -17,20 +17,22 @@ public class Sale {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @NotBlank
+    @Column(nullable = false)
     private String client;
 
-    @NotNull
-    @Min(0)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal total;
 
-    @NotNull
-    @OneToMany(mappedBy = "sale")
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SaleItem> items;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 
     public Long getId() {return id;}
     public void setId(Long id){this.id = id;}

@@ -16,15 +16,13 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Column(nullable = false)
     private String name;
 
-    @NotNull
-    @DecimalMin("0.01")
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @NotNull
-    @Min(0)
+    @Column(nullable = false)
     private Integer stock;
 
     public Long getId(){return id;}

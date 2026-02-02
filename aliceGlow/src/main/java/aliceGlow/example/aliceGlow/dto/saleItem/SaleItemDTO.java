@@ -1,6 +1,5 @@
-package aliceGlow.example.aliceGlow.dto;
+package aliceGlow.example.aliceGlow.dto.saleItem;
 
-import aliceGlow.example.aliceGlow.domain.Product;
 import aliceGlow.example.aliceGlow.domain.SaleItem;
 
 import java.math.BigDecimal;

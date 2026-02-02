@@ -15,22 +15,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Column(nullable = false)
     private String name;
 
-    @Email
-    @NotBlank
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank
+    @Column(nullable = false)
     private String password;
 
     @ManyToMany
-    @JoinTable(name = "user_perfis", joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "perfil_id"))
+    @JoinTable(
+            name = "user_perfis",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "perfil_id")
+    )
     private Set<Perfil> perfils = new HashSet<>();
 
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist

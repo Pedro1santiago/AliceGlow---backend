@@ -1,4 +1,4 @@
-package aliceGlow.example.aliceGlow.dto;
+package aliceGlow.example.aliceGlow.dto.product;
 
 import aliceGlow.example.aliceGlow.domain.Product;
 
