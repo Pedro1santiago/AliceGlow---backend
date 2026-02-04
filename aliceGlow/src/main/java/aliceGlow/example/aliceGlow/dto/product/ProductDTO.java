@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 public record ProductDTO(Long id, String name, BigDecimal price, Integer stock) {
 
     public static ProductDTO toDTO(Product product){
-        return new ProductDTO(product.getId(), product.getName(), product.getPrice(), product.getStock());
+        return new ProductDTO(product.getId(), product.getName(), product.getCostPrice(), product.getStock());
     }
 
 }

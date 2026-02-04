@@ -11,7 +11,7 @@ public record UpdateProductDTO(
 
         String name,
 
-        BigDecimal price,
+        BigDecimal costPrice,
 
         Integer stock
 ){}

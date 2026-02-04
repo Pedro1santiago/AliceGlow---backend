@@ -29,7 +29,7 @@ public class ProductService {
     public ProductDTO createProduct(CreateProductDTO createProductDTO){
         Product product = new Product();
         product.setName(createProductDTO.name());
-        product.setPrice(createProductDTO.price());
+        product.setCostPrice(createProductDTO.costPrice());
         product.setStock(createProductDTO.stock());
 
         Product savedProduct = productRepository.save(product);
@@ -46,8 +46,8 @@ public class ProductService {
             product.setName(updateProductDTO.name());
         }
 
-        if (updateProductDTO.price() != null) {
-            product.setPrice(updateProductDTO.price());
+        if (updateProductDTO.costPrice() != null) {
+            product.setCostPrice(updateProductDTO.costPrice());
         }
 
         if (updateProductDTO.stock() != null) {

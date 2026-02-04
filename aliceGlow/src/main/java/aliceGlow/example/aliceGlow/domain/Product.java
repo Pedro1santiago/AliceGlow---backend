@@ -20,7 +20,7 @@ public class Product {
     private String name;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    private BigDecimal costPrice;
 
     @Column(nullable = false)
     private Integer stock;
@@ -31,8 +31,8 @@ public class Product {
     public String getName(){return name;}
     public void setName(String name){this.name = name;}
 
-    public BigDecimal getPrice(){return price;}
-    public void setPrice(BigDecimal price){this.price = price;}
+    public BigDecimal getCostPrice(){return costPrice;}
+    public void setCostPrice(BigDecimal costPrice){this.costPrice = costPrice;}
 
     public Integer getStock(){return stock;}
     public void setStock(Integer stock){this.stock = stock;}

@@ -12,7 +12,7 @@ public record CreateProductDTO(
         String name,
 
         @DecimalMin("0.01")
-        BigDecimal price,
+        BigDecimal costPrice,
 
         @NotNull
         @Min(0)

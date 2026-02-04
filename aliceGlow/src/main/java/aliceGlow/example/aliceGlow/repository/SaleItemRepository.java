@@ -2,6 +2,29 @@ package aliceGlow.example.aliceGlow.repository;
 
 import aliceGlow.example.aliceGlow.domain.SaleItem;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface SaleItemRepository extends JpaRepository<SaleItem, Long> {
+
+    @Query("""
+    SELECT COALESCE(
+        SUM(item.subtotal - (item.quantity * p.costPrice)), 0
+    )
+    FROM SaleItem item
+    JOIN item.product p
+    """)
+    BigDecimal calculateTotalProfit();
+
+    @Query("""
+    SELECT p.name, SUM(si.quantity) 
+    FROM SaleItem si
+    JOIN si.product p
+    GROUP BY p.name
+    ORDER BY SUM(si.quantity) DESC
+    """)
+    List<Object[]> findTopSellingProducts();
+
 }
