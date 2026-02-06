@@ -7,6 +7,7 @@ import aliceGlow.example.aliceGlow.dto.product.UpdateProductDTO;
 import aliceGlow.example.aliceGlow.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,6 +48,9 @@ public class ProductService {
         }
 
         if (updateProductDTO.costPrice() != null) {
+            if (updateProductDTO.costPrice().compareTo(BigDecimal.ZERO) < 0 ){
+                throw new RuntimeException("CostPrice cannot be negative");
+            }
             product.setCostPrice(updateProductDTO.costPrice());
         }
 
