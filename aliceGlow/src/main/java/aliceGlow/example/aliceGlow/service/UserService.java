@@ -5,6 +5,8 @@ import aliceGlow.example.aliceGlow.domain.User;
 import aliceGlow.example.aliceGlow.dto.user.CreateUserDTO;
 import aliceGlow.example.aliceGlow.dto.user.UpdateUserDTO;
 import aliceGlow.example.aliceGlow.dto.user.UserDTO;
+import aliceGlow.example.aliceGlow.exception.DefaultUserProfileNotFoundException;
+import aliceGlow.example.aliceGlow.exception.UserNotFoundException;
 import aliceGlow.example.aliceGlow.repository.PerfilRepository;
 import aliceGlow.example.aliceGlow.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class UserService {
           user.setPassword(createUserDTO.password());
 
           Perfil userPerfil = perfilRepository.findByName("USER")
-                  .orElseThrow(() -> new RuntimeException("Default profile USER not found"));
+                  .orElseThrow(DefaultUserProfileNotFoundException::new);
 
           user.getPerfils().add(userPerfil);
 
@@ -48,7 +50,7 @@ public class UserService {
 
     public UserDTO updateUser(Long id, UpdateUserDTO updateUserDTO){
        User user = userRepository.findById(id)
-               .orElseThrow(() -> new RuntimeException("User not found"));
+               .orElseThrow (() -> new UserNotFoundException(id));
 
        user.setName(updateUserDTO.name());
        user.setEmail(updateUserDTO.email());
@@ -61,7 +63,7 @@ public class UserService {
 
     public void deleteUser(Long id){
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         userRepository.delete(user);
 

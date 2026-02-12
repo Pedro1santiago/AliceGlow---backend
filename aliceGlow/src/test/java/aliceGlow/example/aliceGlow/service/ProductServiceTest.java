@@ -3,6 +3,8 @@ import aliceGlow.example.aliceGlow.domain.Product;
 import aliceGlow.example.aliceGlow.dto.product.CreateProductDTO;
 import aliceGlow.example.aliceGlow.dto.product.ProductDTO;
 import aliceGlow.example.aliceGlow.dto.product.UpdateProductDTO;
+import aliceGlow.example.aliceGlow.exception.CostPriceCannotBeNegativeException;
+import aliceGlow.example.aliceGlow.exception.ProductNotFoundException;
 import aliceGlow.example.aliceGlow.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -162,8 +164,8 @@ class ProductServiceTest {
 
 
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        ProductNotFoundException exception = assertThrows(
+                ProductNotFoundException.class,
                 () -> productService.updateProduct(productId, updateProduct)
         );
 
@@ -193,33 +195,31 @@ class ProductServiceTest {
         when(productRepository.findById(productId))
                 .thenReturn(Optional.of(existingProduct));
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        CostPriceCannotBeNegativeException exception = assertThrows(
+                CostPriceCannotBeNegativeException.class,
                         () -> productService.updateProduct(productId, product)
         );
 
-        assertEquals("CostPrice cannot be negative", exception.getMessage());
+        assertEquals("Cost Price cannot be negative", exception.getMessage());
         verify(productRepository).findById(productId);
         verify(productRepository, never()).save(any(Product.class));
     }
 
+
     @Test
-    void shouldThrowExceptionWhenProductNotFoundOnDelete(){
+    void shouldThrowExceptionWhenProductNotFoundOnDelete() {
 
         Long productId = 1L;
 
         when(productRepository.findById(productId))
                 .thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        assertThrows(ProductNotFoundException.class,
                 () -> productService.deleteProduct(productId)
         );
 
-        assertEquals("Product not found", exception.getMessage());
-
         verify(productRepository).findById(productId);
-        verify(productRepository, never()).delete(any(Product.class));
+        verify(productRepository, never()).delete(any());
     }
 
 }

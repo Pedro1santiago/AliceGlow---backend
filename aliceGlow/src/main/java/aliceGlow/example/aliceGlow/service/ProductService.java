@@ -4,6 +4,9 @@ import aliceGlow.example.aliceGlow.domain.Product;
 import aliceGlow.example.aliceGlow.dto.product.CreateProductDTO;
 import aliceGlow.example.aliceGlow.dto.product.ProductDTO;
 import aliceGlow.example.aliceGlow.dto.product.UpdateProductDTO;
+import aliceGlow.example.aliceGlow.exception.CostPriceCannotBeNegativeException;
+import aliceGlow.example.aliceGlow.exception.ProductNotFoundException;
+import aliceGlow.example.aliceGlow.exception.StockNegativeException;
 import aliceGlow.example.aliceGlow.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -39,7 +42,7 @@ public class ProductService {
     public ProductDTO updateProduct(Long id, UpdateProductDTO updateProductDTO) {
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(ProductNotFoundException::new);
 
         if (updateProductDTO.name() != null) {
             product.setName(updateProductDTO.name());
@@ -47,14 +50,14 @@ public class ProductService {
 
         if (updateProductDTO.costPrice() != null) {
             if (updateProductDTO.costPrice().compareTo(BigDecimal.ZERO) < 0 ){
-                throw new RuntimeException("CostPrice cannot be negative");
+                throw new CostPriceCannotBeNegativeException();
             }
             product.setCostPrice(updateProductDTO.costPrice());
         }
 
         if (updateProductDTO.stock() != null) {
             if (updateProductDTO.stock() < 0) {
-                throw new IllegalArgumentException("Stock cannot be negative");
+                throw new StockNegativeException();
             }
             product.setStock(updateProductDTO.stock());
         }
@@ -66,7 +69,7 @@ public class ProductService {
 
     public void deleteProduct(Long id){
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(ProductNotFoundException::new);
 
         productRepository.delete(product);
     }

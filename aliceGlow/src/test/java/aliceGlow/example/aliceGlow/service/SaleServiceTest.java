@@ -4,6 +4,9 @@ import aliceGlow.example.aliceGlow.domain.Sale;
 import aliceGlow.example.aliceGlow.dto.sale.CreateSaleDTO;
 import aliceGlow.example.aliceGlow.dto.sale.SaleDTO;
 import aliceGlow.example.aliceGlow.dto.saleItem.CreateSaleItemDTO;
+import aliceGlow.example.aliceGlow.exception.ProductNotFoundException;
+import aliceGlow.example.aliceGlow.exception.SaleNotFoundException;
+import aliceGlow.example.aliceGlow.exception.SaleWithoutItemsException;
 import aliceGlow.example.aliceGlow.repository.ProductRepository;
 import aliceGlow.example.aliceGlow.repository.SaleRepository;
 import org.junit.jupiter.api.Test;
@@ -63,27 +66,36 @@ public class SaleServiceTest {
     }
 
     @Test
-    void shouldCreateSale() {
+    void shouldCreateSaleSuccessfully() {
 
-        CreateSaleDTO saleDTO = new CreateSaleDTO(
-                "Diana",
-                new ArrayList<>()
-        );
+        Long productId = 1L;
 
-        Sale sale = new Sale();
-        sale.setClient("Diana");
-        sale.setItems(new ArrayList<>());
-        sale.setTotal(new BigDecimal("100.00"));
+        Product product = new Product();
+        product.setId(productId);
+        product.setName("Base");
+        product.setCostPrice(new BigDecimal("50.00"));
+
+        CreateSaleItemDTO itemDTO =
+                new CreateSaleItemDTO(productId, 2);
+
+        CreateSaleDTO saleDTO =
+                new CreateSaleDTO("Diana", List.of(itemDTO));
+
+        when(productRepository.findById(productId))
+                .thenReturn(Optional.of(product));
 
         when(saleRepository.save(any(Sale.class)))
-                .thenReturn(sale);
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         SaleDTO result = saleService.sale(saleDTO);
 
         assertNotNull(result);
         assertEquals("Diana", result.client());
-        assertEquals(new ArrayList<>(), result.saleItems());
+        assertEquals(1, result.saleItems().size());
         assertEquals(new BigDecimal("100.00"), result.total());
+
+        verify(productRepository).findById(productId);
+        verify(saleRepository).save(any(Sale.class));
     }
 
     @Test
@@ -157,14 +169,53 @@ public class SaleServiceTest {
         when(saleRepository.findById(saleId))
                 .thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        SaleNotFoundException exception = assertThrows(
+                SaleNotFoundException.class,
                 () -> saleService.deleteSale(saleId));
 
         assertEquals("Sale not found", exception.getMessage());
 
         verify(saleRepository).findById(saleId);
 
+    }
+
+    @Test
+    void shouldThrowExceptionWhenProductNotFoundOnCreateSale() {
+
+        Long productId = 1L;
+
+        CreateSaleItemDTO item = new CreateSaleItemDTO(productId, 10);
+
+        CreateSaleDTO dto = new CreateSaleDTO(
+                "Diana",
+                List.of(item)
+        );
+
+        when(productRepository.findById(productId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(ProductNotFoundException.class,
+                () -> saleService.sale(dto)
+        );
+
+        verify(productRepository).findById(productId);
+        verify(saleRepository, never()).save(any(Sale.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenCreateSaleHasNoItems() {
+
+        CreateSaleDTO dto = new CreateSaleDTO(
+                "Diana",
+                List.of()
+        );
+
+        assertThrows(SaleWithoutItemsException.class,
+                () -> saleService.sale(dto)
+        );
+
+        verify(saleRepository, never()).save(any());
+        verify(productRepository, never()).findById(any());
     }
 
 }

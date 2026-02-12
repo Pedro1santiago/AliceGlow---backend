@@ -6,6 +6,9 @@ import aliceGlow.example.aliceGlow.dto.sale.CreateSaleDTO;
 import aliceGlow.example.aliceGlow.dto.sale.ProductSalesDTO;
 import aliceGlow.example.aliceGlow.dto.sale.SaleDTO;
 import aliceGlow.example.aliceGlow.dto.saleItem.CreateSaleItemDTO;
+import aliceGlow.example.aliceGlow.exception.ProductNotFoundException;
+import aliceGlow.example.aliceGlow.exception.SaleNotFoundException;
+import aliceGlow.example.aliceGlow.exception.SaleWithoutItemsException;
 import aliceGlow.example.aliceGlow.repository.ProductRepository;
 import aliceGlow.example.aliceGlow.repository.SaleItemRepository;
 import aliceGlow.example.aliceGlow.repository.SaleRepository;
@@ -41,13 +44,17 @@ public class SaleService {
         Sale sale = new Sale();
         sale.setClient(createSaleDTO.client());
 
+        if (createSaleDTO.saleItems().isEmpty()) {
+            throw new SaleWithoutItemsException();
+        }
+
         List<SaleItem> items = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
-
+ 
         for (CreateSaleItemDTO itemDTO : createSaleDTO.saleItems()) {
 
             Product product = productRepository.findById(itemDTO.productId())
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(ProductNotFoundException::new);
 
             BigDecimal unitPrice = product.getCostPrice();
             BigDecimal subtotal = unitPrice.multiply(
@@ -75,7 +82,7 @@ public class SaleService {
 
     public void deleteSale(Long id){
         Sale sale = saleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Sale not found"));
+                .orElseThrow(SaleNotFoundException::new);
         saleRepository.delete(sale);
     }
 
